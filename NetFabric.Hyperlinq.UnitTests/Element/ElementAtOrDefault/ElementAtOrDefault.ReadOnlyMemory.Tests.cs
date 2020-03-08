@@ -4,7 +4,7 @@ using Xunit;
 
 namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAtOrDefault
 {
-    public class ValueEnumerableTests
+    public class ReadOnlyMemoryTests
     {
         [Theory]
         [MemberData(nameof(TestData.Empty), MemberType = typeof(TestData))]
@@ -15,13 +15,12 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAtOrDefault
             for (var index = 0; index < source.Length; index++)
             {
                 // Arrange
-                var wrapped = Wrap.AsValueEnumerable(source);
                 var expected = 
                     System.Linq.Enumerable.ElementAtOrDefault(source, index);
 
                 // Act
-                var result = ValueEnumerable
-                    .ElementAtOrDefault<Wrap.ValueEnumerable<int>, Wrap.Enumerator<int>, int>(wrapped, index);
+                var result = Array
+                    .ElementAtOrDefault<int>((ReadOnlyMemory<int>)source.AsMemory(), index);
 
                 // Assert
                 _ = result.Must()
@@ -36,7 +35,6 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAtOrDefault
         public void ElementAtOrDefault_Predicate_With_ValidData_Must_Succeed(int[] source, Predicate<int> predicate)
         {
             // Arrange
-            var wrapped = Wrap.AsValueEnumerable(source);
             var expected = 
                 System.Linq.Enumerable.ToList(
                     System.Linq.Enumerable.Where(source, predicate.AsFunc()));
@@ -44,8 +42,8 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAtOrDefault
             for (var index = 0; index < expected.Count; index++)
             {
                 // Act
-                var result = ValueEnumerable
-                    .Where<Wrap.ValueEnumerable<int>, Wrap.Enumerator<int>, int>(wrapped, predicate)
+                var result = Array
+                    .Where<int>((ReadOnlyMemory<int>)source.AsMemory(), predicate)
                     .ElementAtOrDefault(index);
 
                 // Assert
@@ -61,7 +59,6 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAtOrDefault
         public void ElementAtOrDefault_PredicateAt_With_ValidData_Must_Succeed(int[] source, PredicateAt<int> predicate)
         {
             // Arrange
-            var wrapped = Wrap.AsValueEnumerable(source);
             var expected = 
                 System.Linq.Enumerable.ToList(
                     System.Linq.Enumerable.Where(source, predicate.AsFunc()));
@@ -69,8 +66,8 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAtOrDefault
             for (var index = 0; index < expected.Count; index++)
             {
                 // Act
-                var result = ValueEnumerable
-                    .Where<Wrap.ValueEnumerable<int>, Wrap.Enumerator<int>, int>(wrapped, predicate)
+                var result = Array
+                    .Where<int>((ReadOnlyMemory<int>)source.AsMemory(), predicate)
                     .ElementAtOrDefault(index);
 
                 // Assert
@@ -80,7 +77,7 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAtOrDefault
         }
 
         [Theory]
-        [MemberData(nameof(TestData.SelectorEmpty), MemberType = typeof(TestData))]
+        [MemberData(nameof(TestData.SelectorSingle), MemberType = typeof(TestData))]
         [MemberData(nameof(TestData.SelectorSingle), MemberType = typeof(TestData))]
         [MemberData(nameof(TestData.SelectorMultiple), MemberType = typeof(TestData))]
         public void ElementAtOrDefault_Selector_With_ValidData_Must_Succeed(int[] source, Selector<int, string> selector)
@@ -88,14 +85,13 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAtOrDefault
             for (var index = 0; index < source.Length; index++)
             {
                 // Arrange
-                var wrapped = Wrap.AsValueEnumerable(source);
                 var expected = 
                     System.Linq.Enumerable.ElementAtOrDefault(
                         System.Linq.Enumerable.Select(source, selector.AsFunc()), index);
 
                 // Act
-                var result = ValueEnumerable
-                    .Select<Wrap.ValueEnumerable<int>, Wrap.Enumerator<int>, int, string>(wrapped, selector)
+                var result = Array
+                    .Select<int, string>((ReadOnlyMemory<int>)source.AsMemory(), selector)
                     .ElementAtOrDefault(index);
 
                 // Assert
@@ -113,14 +109,13 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAtOrDefault
             for (var index = 0; index < source.Length; index++)
             {
                 // Arrange
-                var wrapped = Wrap.AsValueEnumerable(source);
                 var expected = 
                     System.Linq.Enumerable.ElementAtOrDefault(
                         System.Linq.Enumerable.Select(source, selector.AsFunc()), index);
 
                 // Act
-                var result = ValueEnumerable
-                    .Select<Wrap.ValueEnumerable<int>, Wrap.Enumerator<int>, int, string>(wrapped, selector)
+                var result = Array
+                    .Select<int, string>((ReadOnlyMemory<int>)source.AsMemory(), selector)
                     .ElementAtOrDefault(index);
 
                 // Assert
@@ -136,7 +131,6 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAtOrDefault
         public void ElementAtOrDefault_Predicate_Selector_With_ValidData_Must_Succeed(int[] source, Predicate<int> predicate, Selector<int, string> selector)
         {
             // Arrange
-            var wrapped = Wrap.AsValueEnumerable(source);
             var expected = 
                 System.Linq.Enumerable.ToList(
                     System.Linq.Enumerable.Select(
@@ -145,8 +139,8 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAtOrDefault
             for (var index = 0; index < expected.Count; index++)
             {
                 // Act
-                var result = ValueEnumerable
-                    .Where<Wrap.ValueEnumerable<int>, Wrap.Enumerator<int>, int>(wrapped, predicate)
+                var result = Array
+                    .Where<int>((ReadOnlyMemory<int>)source.AsMemory(), predicate)
                     .Select(selector)
                     .ElementAtOrDefault(index);
 

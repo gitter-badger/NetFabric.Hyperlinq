@@ -1,25 +1,26 @@
 using NetFabric.Assertive;
 using System;
+using System.Threading.Tasks;
 using Xunit;
 
-namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAt
+namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAtAsync
 {
-    public class ValueEnumerableTests
+    public class AsyncValueEnumerableTests
     {
         [Theory]
         [MemberData(nameof(TestData.Empty), MemberType = typeof(TestData))]
         [MemberData(nameof(TestData.Single), MemberType = typeof(TestData))]
         [MemberData(nameof(TestData.Multiple), MemberType = typeof(TestData))]
-        public void ElementAt_With_OutOfRange_Must_Throw(int[] source)
+        public void ElementAtAsync_With_OutOfRange_Must_Throw(int[] source)
         {
             // Arrange
-            var wrapped = Wrap.AsValueEnumerable(source);
+            var wrapped = Wrap.AsAsyncValueEnumerable(source);
 
             // Act
-            Action actionLess = () => _ = ValueEnumerable
-                .ElementAt<Wrap.ValueEnumerable<int>, Wrap.Enumerator<int>, int>(wrapped, -1);
-            Action actionGreater = () => _ = ValueEnumerable
-                .ElementAt<Wrap.ValueEnumerable<int>, Wrap.Enumerator<int>, int>(wrapped, source.Length);
+            Action actionLess = () => _ = AsyncValueEnumerable
+                .ElementAtAsync<Wrap.AsyncValueEnumerable<int>, Wrap.AsyncEnumerator<int>, int>(wrapped, -1);
+            Func<ValueTask> actionGreater = async () => _ = await AsyncValueEnumerable
+                .ElementAtAsync<Wrap.AsyncValueEnumerable<int>, Wrap.AsyncEnumerator<int>, int>(wrapped, source.Length);
 
             // Assert
             _ = actionLess.Must()
@@ -31,18 +32,18 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAt
         [Theory]
         [MemberData(nameof(TestData.Single), MemberType = typeof(TestData))]
         [MemberData(nameof(TestData.Multiple), MemberType = typeof(TestData))]
-        public void ElementAt_With_ValidData_Must_Succeed(int[] source)
+        public async ValueTask ElementAtAsync_With_ValidData_Must_Succeed(int[] source)
         {
+            var wrapped = Wrap.AsAsyncValueEnumerable(source);
             for (var index = 0; index < source.Length; index++)
             {
                 // Arrange
-                var wrapped = Wrap.AsValueEnumerable(source);
                 var expected = 
                     System.Linq.Enumerable.ElementAt(source, index);
 
                 // Act
-                var result = ValueEnumerable
-                    .ElementAt<Wrap.ValueEnumerable<int>, Wrap.Enumerator<int>, int>(wrapped, index);
+                var result = await AsyncValueEnumerable
+                    .ElementAtAsync<Wrap.AsyncValueEnumerable<int>, Wrap.AsyncEnumerator<int>, int>(wrapped, index);
 
                 // Assert
                 _ = result.Must()
@@ -54,18 +55,18 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAt
         [MemberData(nameof(TestData.PredicateEmpty), MemberType = typeof(TestData))]
         [MemberData(nameof(TestData.PredicateSingle), MemberType = typeof(TestData))]
         [MemberData(nameof(TestData.PredicateMultiple), MemberType = typeof(TestData))]
-        public void ElementAt_Predicate_With_OutOfRange_Must_Throw(int[] source, Predicate<int> predicate)
+        public void ElementAtAsync_Predicate_With_OutOfRange_Must_Throw(int[] source, Predicate<int> predicate)
         {
             // Arrange
-            var wrapped = Wrap.AsValueEnumerable(source);
+            var wrapped = Wrap.AsAsyncValueEnumerable(source);
 
             // Act
-            Action actionLess = () => _ = ValueEnumerable
-                .Where<Wrap.ValueEnumerable<int>, Wrap.Enumerator<int>, int>(wrapped, predicate)
-                .ElementAt(-1);
-            Action actionGreater = () => _ = ValueEnumerable
-                .Where<Wrap.ValueEnumerable<int>, Wrap.Enumerator<int>, int>(wrapped, predicate)
-                .ElementAt(source.Length);
+            Action actionLess = () => _ = AsyncValueEnumerable
+                .Where<Wrap.AsyncValueEnumerable<int>, Wrap.AsyncEnumerator<int>, int>(wrapped, predicate.AsAsync())
+                .ElementAtAsync(-1);
+            Func<ValueTask> actionGreater = async () => _ = await AsyncValueEnumerable
+                .Where<Wrap.AsyncValueEnumerable<int>, Wrap.AsyncEnumerator<int>, int>(wrapped, predicate.AsAsync())
+                .ElementAtAsync(source.Length);
 
             // Assert
             _ = actionLess.Must()
@@ -77,10 +78,10 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAt
         [Theory]
         [MemberData(nameof(TestData.PredicateSingle), MemberType = typeof(TestData))]
         [MemberData(nameof(TestData.PredicateMultiple), MemberType = typeof(TestData))]
-        public void ElementAt_Predicate_With_ValidData_Must_Succeed(int[] source, Predicate<int> predicate)
+        public async ValueTask ElementAtAsync_Predicate_With_ValidData_Must_Succeed(int[] source, Predicate<int> predicate)
         {
             // Arrange
-            var wrapped = Wrap.AsValueEnumerable(source);
+            var wrapped = Wrap.AsAsyncValueEnumerable(source);
             var expected = 
                 System.Linq.Enumerable.ToList(
                     System.Linq.Enumerable.Where(source, predicate.AsFunc()));
@@ -88,9 +89,9 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAt
             for (var index = 0; index < expected.Count; index++)
             {
                 // Act
-                var result = ValueEnumerable
-                    .Where<Wrap.ValueEnumerable<int>, Wrap.Enumerator<int>, int>(wrapped, predicate)
-                    .ElementAt(index);
+                var result = await AsyncValueEnumerable
+                    .Where<Wrap.AsyncValueEnumerable<int>, Wrap.AsyncEnumerator<int>, int>(wrapped, predicate.AsAsync())
+                    .ElementAtAsync(index);
 
                 // Assert
                 _ = result.Must()
@@ -102,18 +103,18 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAt
         [MemberData(nameof(TestData.PredicateAtEmpty), MemberType = typeof(TestData))]
         [MemberData(nameof(TestData.PredicateAtSingle), MemberType = typeof(TestData))]
         [MemberData(nameof(TestData.PredicateAtMultiple), MemberType = typeof(TestData))]
-        public void ElementAt_PredicateAt_With_OutOfRange_Must_Throw(int[] source, PredicateAt<int> predicate)
+        public void ElementAtAsync_PredicateAt_With_OutOfRange_Must_Throw(int[] source, PredicateAt<int> predicate)
         {
             // Arrange
-            var wrapped = Wrap.AsValueEnumerable(source);
+            var wrapped = Wrap.AsAsyncValueEnumerable(source);
 
             // Act
-            Action actionLess = () => _ = ValueEnumerable
-                .Where<Wrap.ValueEnumerable<int>, Wrap.Enumerator<int>, int>(wrapped, predicate)
-                .ElementAt(-1);
-            Action actionGreater = () => _ = ValueEnumerable
-                .Where<Wrap.ValueEnumerable<int>, Wrap.Enumerator<int>, int>(wrapped, predicate)
-                .ElementAt(source.Length);
+            Action actionLess = () => _ = AsyncValueEnumerable
+                .Where<Wrap.AsyncValueEnumerable<int>, Wrap.AsyncEnumerator<int>, int>(wrapped, predicate.AsAsync())
+                .ElementAtAsync(-1);
+            Func<ValueTask> actionGreater = async () => _ = await AsyncValueEnumerable
+                .Where<Wrap.AsyncValueEnumerable<int>, Wrap.AsyncEnumerator<int>, int>(wrapped, predicate.AsAsync())
+                .ElementAtAsync(source.Length);
 
             // Assert
             _ = actionLess.Must()
@@ -125,10 +126,10 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAt
         [Theory]
         [MemberData(nameof(TestData.PredicateAtSingle), MemberType = typeof(TestData))]
         [MemberData(nameof(TestData.PredicateAtMultiple), MemberType = typeof(TestData))]
-        public void ElementAt_PredicateAt_With_ValidData_Must_Succeed(int[] source, PredicateAt<int> predicate)
+        public async ValueTask ElementAtAsync_PredicateAt_With_ValidData_Must_Succeed(int[] source, PredicateAt<int> predicate)
         {
             // Arrange
-            var wrapped = Wrap.AsValueEnumerable(source);
+            var wrapped = Wrap.AsAsyncValueEnumerable(source);
             var expected = 
                 System.Linq.Enumerable.ToList(
                     System.Linq.Enumerable.Where(source, predicate.AsFunc()));
@@ -136,9 +137,9 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAt
             for (var index = 0; index < expected.Count; index++)
             {
                 // Act
-                var result = ValueEnumerable
-                    .Where<Wrap.ValueEnumerable<int>, Wrap.Enumerator<int>, int>(wrapped, predicate)
-                    .ElementAt(index);
+                var result = await AsyncValueEnumerable
+                    .Where<Wrap.AsyncValueEnumerable<int>, Wrap.AsyncEnumerator<int>, int>(wrapped, predicate.AsAsync())
+                    .ElementAtAsync(index);
 
                 // Assert
                 _ = result.Must()
@@ -150,18 +151,18 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAt
         [MemberData(nameof(TestData.SelectorEmpty), MemberType = typeof(TestData))]
         [MemberData(nameof(TestData.SelectorSingle), MemberType = typeof(TestData))]
         [MemberData(nameof(TestData.SelectorMultiple), MemberType = typeof(TestData))]
-        public void ElementAt_Selector_With_OutOfRange_Must_Throw(int[] source, Selector<int, string> selector)
+        public void ElementAtAsync_Selector_With_OutOfRange_Must_Throw(int[] source, Selector<int, string> selector)
         {
             // Arrange
-            var wrapped = Wrap.AsValueEnumerable(source);
+            var wrapped = Wrap.AsAsyncValueEnumerable(source);
 
             // Act
-            Action actionLess = () => _ = ValueEnumerable
-                .Select<Wrap.ValueEnumerable<int>, Wrap.Enumerator<int>, int, string>(wrapped, selector)
-                .ElementAt(-1);
-            Action actionGreater = () => _ = ValueEnumerable
-                .Select<Wrap.ValueEnumerable<int>, Wrap.Enumerator<int>, int, string>(wrapped, selector)
-                .ElementAt(source.Length);
+            Action actionLess = () => _ = AsyncValueEnumerable
+                .Select<Wrap.AsyncValueEnumerable<int>, Wrap.AsyncEnumerator<int>, int, string>(wrapped, selector.AsAsync())
+                .ElementAtAsync(-1);
+            Func<ValueTask> actionGreater = async () => _ = await AsyncValueEnumerable
+                .Select<Wrap.AsyncValueEnumerable<int>, Wrap.AsyncEnumerator<int>, int, string>(wrapped, selector.AsAsync())
+                .ElementAtAsync(source.Length);
 
             // Assert
             _ = actionLess.Must()
@@ -173,20 +174,20 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAt
         [Theory]
         [MemberData(nameof(TestData.SelectorSingle), MemberType = typeof(TestData))]
         [MemberData(nameof(TestData.SelectorMultiple), MemberType = typeof(TestData))]
-        public void ElementAt_Selector_With_ValidData_Must_Succeed(int[] source, Selector<int, string> selector)
+        public async ValueTask ElementAtAsync_Selector_With_ValidData_Must_Succeed(int[] source, Selector<int, string> selector)
         {
             for (var index = 0; index < source.Length; index++)
             {
                 // Arrange
-                var wrapped = Wrap.AsValueEnumerable(source);
+                var wrapped = Wrap.AsAsyncValueEnumerable(source);
                 var expected = 
                     System.Linq.Enumerable.ElementAt(
                         System.Linq.Enumerable.Select(source, selector.AsFunc()), index);
 
                 // Act
-                var result = ValueEnumerable
-                    .Select<Wrap.ValueEnumerable<int>, Wrap.Enumerator<int>, int, string>(wrapped, selector)
-                    .ElementAt(index);
+                var result = await AsyncValueEnumerable
+                    .Select<Wrap.AsyncValueEnumerable<int>, Wrap.AsyncEnumerator<int>, int, string>(wrapped, selector.AsAsync())
+                    .ElementAtAsync(index);
 
                 // Assert
                 _ = result.Must()
@@ -198,18 +199,18 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAt
         [MemberData(nameof(TestData.SelectorAtEmpty), MemberType = typeof(TestData))]
         [MemberData(nameof(TestData.SelectorAtSingle), MemberType = typeof(TestData))]
         [MemberData(nameof(TestData.SelectorAtMultiple), MemberType = typeof(TestData))]
-        public void ElementAt_SelectorAt_With_OutOfRange_Must_Throw(int[] source, SelectorAt<int, string> selector)
+        public void ElementAtAsync_SelectorAt_With_OutOfRange_Must_Throw(int[] source, SelectorAt<int, string> selector)
         {
             // Arrange
-            var wrapped = Wrap.AsValueEnumerable(source);
+            var wrapped = Wrap.AsAsyncValueEnumerable(source);
 
             // Act
-            Action actionLess = () => _ = ValueEnumerable
-                .Select<Wrap.ValueEnumerable<int>, Wrap.Enumerator<int>, int, string>(wrapped, selector)
-                .ElementAt(-1);
-            Action actionGreater = () => _ = ValueEnumerable
-                .Select<Wrap.ValueEnumerable<int>, Wrap.Enumerator<int>, int, string>(wrapped, selector)
-                .ElementAt(source.Length);
+            Action actionLess = () => _ = AsyncValueEnumerable
+                .Select<Wrap.AsyncValueEnumerable<int>, Wrap.AsyncEnumerator<int>, int, string>(wrapped, selector.AsAsync())
+                .ElementAtAsync(-1);
+            Func<ValueTask> actionGreater = async () => _ = await AsyncValueEnumerable
+                .Select<Wrap.AsyncValueEnumerable<int>, Wrap.AsyncEnumerator<int>, int, string>(wrapped, selector.AsAsync())
+                .ElementAtAsync(source.Length);
 
             // Assert
             _ = actionLess.Must()
@@ -221,20 +222,20 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAt
         [Theory]
         [MemberData(nameof(TestData.SelectorAtSingle), MemberType = typeof(TestData))]
         [MemberData(nameof(TestData.SelectorAtMultiple), MemberType = typeof(TestData))]
-        public void ElementAt_SelectorAt_With_ValidData_Must_Succeed(int[] source, SelectorAt<int, string> selector)
+        public async ValueTask ElementAtAsync_SelectorAt_With_ValidData_Must_Succeed(int[] source, SelectorAt<int, string> selector)
         {
             for (var index = 0; index < source.Length; index++)
             {
                 // Arrange
-                var wrapped = Wrap.AsValueEnumerable(source);
+                var wrapped = Wrap.AsAsyncValueEnumerable(source);
                 var expected = 
                     System.Linq.Enumerable.ElementAt(
                         System.Linq.Enumerable.Select(source, selector.AsFunc()), index);
 
                 // Act
-                var result = ValueEnumerable
-                    .Select<Wrap.ValueEnumerable<int>, Wrap.Enumerator<int>, int, string>(wrapped, selector)
-                    .ElementAt(index);
+                var result = await AsyncValueEnumerable
+                    .Select<Wrap.AsyncValueEnumerable<int>, Wrap.AsyncEnumerator<int>, int, string>(wrapped, selector.AsAsync())
+                    .ElementAtAsync(index);
 
                 // Assert
                 _ = result.Must()
@@ -246,20 +247,20 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAt
         [MemberData(nameof(TestData.PredicateSelectorEmpty), MemberType = typeof(TestData))]
         [MemberData(nameof(TestData.PredicateSelectorSingle), MemberType = typeof(TestData))]
         [MemberData(nameof(TestData.PredicateSelectorMultiple), MemberType = typeof(TestData))]
-        public void ElementAt_Predicate_Selector_With_OutOfRange_Must_Throw(int[] source, Predicate<int> predicate, Selector<int, string> selector)
+        public void ElementAtAsync_Predicate_Selector_With_OutOfRange_Must_Throw(int[] source, Predicate<int> predicate, Selector<int, string> selector)
         {
             // Arrange
-            var wrapped = Wrap.AsValueEnumerable(source);
+            var wrapped = Wrap.AsAsyncValueEnumerable(source);
 
             // Act
-            Action actionLess = () => _ = ValueEnumerable
-                .Where<Wrap.ValueEnumerable<int>, Wrap.Enumerator<int>, int>(wrapped, predicate)
-                .Select(selector)
-                .ElementAt(-1);
-            Action actionGreater = () => _ = ValueEnumerable
-                .Where<Wrap.ValueEnumerable<int>, Wrap.Enumerator<int>, int>(wrapped, predicate)
-                .Select(selector)
-                .ElementAt(source.Length);
+            Action actionLess = () => _ = AsyncValueEnumerable
+                .Where<Wrap.AsyncValueEnumerable<int>, Wrap.AsyncEnumerator<int>, int>(wrapped, predicate.AsAsync())
+                .Select(selector.AsAsync())
+                .ElementAtAsync(-1);
+            Func<ValueTask> actionGreater = async () => _ = await AsyncValueEnumerable
+                .Where<Wrap.AsyncValueEnumerable<int>, Wrap.AsyncEnumerator<int>, int>(wrapped, predicate.AsAsync())
+                .Select(selector.AsAsync())
+                .ElementAtAsync(source.Length);
 
             // Assert
             _ = actionLess.Must()
@@ -271,10 +272,10 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAt
         [Theory]
         [MemberData(nameof(TestData.PredicateSelectorSingle), MemberType = typeof(TestData))]
         [MemberData(nameof(TestData.PredicateSelectorMultiple), MemberType = typeof(TestData))]
-        public void ElementAt_Predicate_Selector_With_ValidData_Must_Succeed(int[] source, Predicate<int> predicate, Selector<int, string> selector)
+        public async ValueTask ElementAtAsync_Predicate_Selector_With_ValidData_Must_Succeed(int[] source, Predicate<int> predicate, Selector<int, string> selector)
         {
             // Arrange
-            var wrapped = Wrap.AsValueEnumerable(source);
+            var wrapped = Wrap.AsAsyncValueEnumerable(source);
             var expected = 
                 System.Linq.Enumerable.ToList(
                     System.Linq.Enumerable.Select(
@@ -283,10 +284,10 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAt
             for (var index = 0; index < expected.Count; index++)
             {
                 // Act
-                var result = ValueEnumerable
-                    .Where<Wrap.ValueEnumerable<int>, Wrap.Enumerator<int>, int>(wrapped, predicate)
-                    .Select(selector)
-                    .ElementAt(index);
+                var result = await AsyncValueEnumerable
+                    .Where<Wrap.AsyncValueEnumerable<int>, Wrap.AsyncEnumerator<int>, int>(wrapped, predicate.AsAsync())
+                    .Select(selector.AsAsync())
+                    .ElementAtAsync(index);
 
                 // Assert
                 _ = result.Must()

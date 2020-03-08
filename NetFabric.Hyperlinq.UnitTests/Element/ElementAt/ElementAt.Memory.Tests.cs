@@ -4,7 +4,7 @@ using Xunit;
 
 namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAt
 {
-    public class ValueEnumerableTests
+    public class MemoryTests
     {
         [Theory]
         [MemberData(nameof(TestData.Empty), MemberType = typeof(TestData))]
@@ -13,13 +13,12 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAt
         public void ElementAt_With_OutOfRange_Must_Throw(int[] source)
         {
             // Arrange
-            var wrapped = Wrap.AsValueEnumerable(source);
 
             // Act
-            Action actionLess = () => _ = ValueEnumerable
-                .ElementAt<Wrap.ValueEnumerable<int>, Wrap.Enumerator<int>, int>(wrapped, -1);
-            Action actionGreater = () => _ = ValueEnumerable
-                .ElementAt<Wrap.ValueEnumerable<int>, Wrap.Enumerator<int>, int>(wrapped, source.Length);
+            Action actionLess = () => _ = Array
+                .ElementAt<int>(source.AsMemory(), -1);
+            Action actionGreater = () => _ = Array
+                .ElementAt<int>(source.AsMemory(), source.Length);
 
             // Assert
             _ = actionLess.Must()
@@ -36,13 +35,12 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAt
             for (var index = 0; index < source.Length; index++)
             {
                 // Arrange
-                var wrapped = Wrap.AsValueEnumerable(source);
                 var expected = 
                     System.Linq.Enumerable.ElementAt(source, index);
 
                 // Act
-                var result = ValueEnumerable
-                    .ElementAt<Wrap.ValueEnumerable<int>, Wrap.Enumerator<int>, int>(wrapped, index);
+                var result = Array
+                    .ElementAt<int>(source.AsMemory(), index);
 
                 // Assert
                 _ = result.Must()
@@ -57,14 +55,13 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAt
         public void ElementAt_Predicate_With_OutOfRange_Must_Throw(int[] source, Predicate<int> predicate)
         {
             // Arrange
-            var wrapped = Wrap.AsValueEnumerable(source);
 
             // Act
-            Action actionLess = () => _ = ValueEnumerable
-                .Where<Wrap.ValueEnumerable<int>, Wrap.Enumerator<int>, int>(wrapped, predicate)
+            Action actionLess = () => _ = Array
+                .Where<int>(source.AsMemory(), predicate)
                 .ElementAt(-1);
-            Action actionGreater = () => _ = ValueEnumerable
-                .Where<Wrap.ValueEnumerable<int>, Wrap.Enumerator<int>, int>(wrapped, predicate)
+            Action actionGreater = () => _ = Array
+                .Where<int>(source.AsMemory(), predicate)
                 .ElementAt(source.Length);
 
             // Assert
@@ -80,7 +77,6 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAt
         public void ElementAt_Predicate_With_ValidData_Must_Succeed(int[] source, Predicate<int> predicate)
         {
             // Arrange
-            var wrapped = Wrap.AsValueEnumerable(source);
             var expected = 
                 System.Linq.Enumerable.ToList(
                     System.Linq.Enumerable.Where(source, predicate.AsFunc()));
@@ -88,8 +84,8 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAt
             for (var index = 0; index < expected.Count; index++)
             {
                 // Act
-                var result = ValueEnumerable
-                    .Where<Wrap.ValueEnumerable<int>, Wrap.Enumerator<int>, int>(wrapped, predicate)
+                var result = Array
+                    .Where<int>(source.AsMemory(), predicate)
                     .ElementAt(index);
 
                 // Assert
@@ -105,14 +101,13 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAt
         public void ElementAt_PredicateAt_With_OutOfRange_Must_Throw(int[] source, PredicateAt<int> predicate)
         {
             // Arrange
-            var wrapped = Wrap.AsValueEnumerable(source);
 
             // Act
-            Action actionLess = () => _ = ValueEnumerable
-                .Where<Wrap.ValueEnumerable<int>, Wrap.Enumerator<int>, int>(wrapped, predicate)
+            Action actionLess = () => _ = Array
+                .Where<int>(source.AsMemory(), predicate)
                 .ElementAt(-1);
-            Action actionGreater = () => _ = ValueEnumerable
-                .Where<Wrap.ValueEnumerable<int>, Wrap.Enumerator<int>, int>(wrapped, predicate)
+            Action actionGreater = () => _ = Array
+                .Where<int>(source.AsMemory(), predicate)
                 .ElementAt(source.Length);
 
             // Assert
@@ -128,7 +123,6 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAt
         public void ElementAt_PredicateAt_With_ValidData_Must_Succeed(int[] source, PredicateAt<int> predicate)
         {
             // Arrange
-            var wrapped = Wrap.AsValueEnumerable(source);
             var expected = 
                 System.Linq.Enumerable.ToList(
                     System.Linq.Enumerable.Where(source, predicate.AsFunc()));
@@ -136,8 +130,8 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAt
             for (var index = 0; index < expected.Count; index++)
             {
                 // Act
-                var result = ValueEnumerable
-                    .Where<Wrap.ValueEnumerable<int>, Wrap.Enumerator<int>, int>(wrapped, predicate)
+                var result = Array
+                    .Where<int>(source.AsMemory(), predicate)
                     .ElementAt(index);
 
                 // Assert
@@ -153,14 +147,13 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAt
         public void ElementAt_Selector_With_OutOfRange_Must_Throw(int[] source, Selector<int, string> selector)
         {
             // Arrange
-            var wrapped = Wrap.AsValueEnumerable(source);
 
             // Act
-            Action actionLess = () => _ = ValueEnumerable
-                .Select<Wrap.ValueEnumerable<int>, Wrap.Enumerator<int>, int, string>(wrapped, selector)
+            Action actionLess = () => _ = Array
+                .Select<int, string>(source.AsMemory(), selector)
                 .ElementAt(-1);
-            Action actionGreater = () => _ = ValueEnumerable
-                .Select<Wrap.ValueEnumerable<int>, Wrap.Enumerator<int>, int, string>(wrapped, selector)
+            Action actionGreater = () => _ = Array
+                .Select<int, string>(source.AsMemory(), selector)
                 .ElementAt(source.Length);
 
             // Assert
@@ -178,14 +171,13 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAt
             for (var index = 0; index < source.Length; index++)
             {
                 // Arrange
-                var wrapped = Wrap.AsValueEnumerable(source);
                 var expected = 
                     System.Linq.Enumerable.ElementAt(
                         System.Linq.Enumerable.Select(source, selector.AsFunc()), index);
 
                 // Act
-                var result = ValueEnumerable
-                    .Select<Wrap.ValueEnumerable<int>, Wrap.Enumerator<int>, int, string>(wrapped, selector)
+                var result = Array
+                    .Select<int, string>(source.AsMemory(), selector)
                     .ElementAt(index);
 
                 // Assert
@@ -201,14 +193,13 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAt
         public void ElementAt_SelectorAt_With_OutOfRange_Must_Throw(int[] source, SelectorAt<int, string> selector)
         {
             // Arrange
-            var wrapped = Wrap.AsValueEnumerable(source);
 
             // Act
-            Action actionLess = () => _ = ValueEnumerable
-                .Select<Wrap.ValueEnumerable<int>, Wrap.Enumerator<int>, int, string>(wrapped, selector)
+            Action actionLess = () => _ = Array
+                .Select<int, string>(source.AsMemory(), selector)
                 .ElementAt(-1);
-            Action actionGreater = () => _ = ValueEnumerable
-                .Select<Wrap.ValueEnumerable<int>, Wrap.Enumerator<int>, int, string>(wrapped, selector)
+            Action actionGreater = () => _ = Array
+                .Select<int, string>(source.AsMemory(), selector)
                 .ElementAt(source.Length);
 
             // Assert
@@ -226,14 +217,13 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAt
             for (var index = 0; index < source.Length; index++)
             {
                 // Arrange
-                var wrapped = Wrap.AsValueEnumerable(source);
                 var expected = 
                     System.Linq.Enumerable.ElementAt(
                         System.Linq.Enumerable.Select(source, selector.AsFunc()), index);
 
                 // Act
-                var result = ValueEnumerable
-                    .Select<Wrap.ValueEnumerable<int>, Wrap.Enumerator<int>, int, string>(wrapped, selector)
+                var result = Array
+                    .Select<int, string>(source.AsMemory(), selector)
                     .ElementAt(index);
 
                 // Assert
@@ -249,15 +239,14 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAt
         public void ElementAt_Predicate_Selector_With_OutOfRange_Must_Throw(int[] source, Predicate<int> predicate, Selector<int, string> selector)
         {
             // Arrange
-            var wrapped = Wrap.AsValueEnumerable(source);
 
             // Act
-            Action actionLess = () => _ = ValueEnumerable
-                .Where<Wrap.ValueEnumerable<int>, Wrap.Enumerator<int>, int>(wrapped, predicate)
+            Action actionLess = () => _ = Array
+                .Where<int>(source.AsMemory(), predicate)
                 .Select(selector)
                 .ElementAt(-1);
-            Action actionGreater = () => _ = ValueEnumerable
-                .Where<Wrap.ValueEnumerable<int>, Wrap.Enumerator<int>, int>(wrapped, predicate)
+            Action actionGreater = () => _ = Array
+                .Where<int>(source.AsMemory(), predicate)
                 .Select(selector)
                 .ElementAt(source.Length);
 
@@ -274,7 +263,6 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAt
         public void ElementAt_Predicate_Selector_With_ValidData_Must_Succeed(int[] source, Predicate<int> predicate, Selector<int, string> selector)
         {
             // Arrange
-            var wrapped = Wrap.AsValueEnumerable(source);
             var expected = 
                 System.Linq.Enumerable.ToList(
                     System.Linq.Enumerable.Select(
@@ -283,8 +271,8 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAt
             for (var index = 0; index < expected.Count; index++)
             {
                 // Act
-                var result = ValueEnumerable
-                    .Where<Wrap.ValueEnumerable<int>, Wrap.Enumerator<int>, int>(wrapped, predicate)
+                var result = Array
+                    .Where<int>(source.AsMemory(), predicate)
                     .Select(selector)
                     .ElementAt(index);
 
