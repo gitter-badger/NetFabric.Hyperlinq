@@ -12,7 +12,7 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAtOrDefault
         [MemberData(nameof(TestData.Multiple), MemberType = typeof(TestData))]
         public void ElementAtOrDefault_With_ValidData_Must_Succeed(int[] source)
         {
-            for (var index = 0; index < source.Length; index++)
+            for (var index = -1; index <= source.Length; index++)
             {
                 // Arrange
                 var expected = 
@@ -39,7 +39,7 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAtOrDefault
                 System.Linq.Enumerable.ToList(
                     System.Linq.Enumerable.Where(source, predicate.AsFunc()));
 
-            for (var index = 0; index < expected.Count; index++)
+            for (var index = -1; index <= expected.Count; index++)
             {
                 // Act
                 var result = Array
@@ -48,7 +48,7 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAtOrDefault
 
                 // Assert
                 _ = result.Must()
-                    .BeEqualTo(expected[index]);
+                    .BeEqualTo(System.Linq.Enumerable.ElementAtOrDefault(expected, index));
             }
         }
 
@@ -63,7 +63,7 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAtOrDefault
                 System.Linq.Enumerable.ToList(
                     System.Linq.Enumerable.Where(source, predicate.AsFunc()));
 
-            for (var index = 0; index < expected.Count; index++)
+            for (var index = -1; index <= expected.Count; index++)
             {
                 // Act
                 var result = Array
@@ -72,7 +72,7 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAtOrDefault
 
                 // Assert
                 _ = result.Must()
-                    .BeEqualTo(expected[index]);
+                    .BeEqualTo(System.Linq.Enumerable.ElementAtOrDefault(expected, index));
             }
         }
 
@@ -82,7 +82,7 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAtOrDefault
         [MemberData(nameof(TestData.SelectorMultiple), MemberType = typeof(TestData))]
         public void ElementAtOrDefault_Selector_With_ValidData_Must_Succeed(int[] source, Selector<int, string> selector)
         {
-            for (var index = 0; index < source.Length; index++)
+            for (var index = -1; index <= source.Length; index++)
             {
                 // Arrange
                 var expected = 
@@ -106,7 +106,7 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAtOrDefault
         [MemberData(nameof(TestData.SelectorAtMultiple), MemberType = typeof(TestData))]
         public void ElementAtOrDefault_SelectorAt_With_ValidData_Must_Succeed(int[] source, SelectorAt<int, string> selector)
         {
-            for (var index = 0; index < source.Length; index++)
+            for (var index = -1; index <= source.Length; index++)
             {
                 // Arrange
                 var expected = 
@@ -136,7 +136,7 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAtOrDefault
                     System.Linq.Enumerable.Select(
                         System.Linq.Enumerable.Where(source, predicate.AsFunc()), selector.AsFunc()));
 
-            for (var index = 0; index < expected.Count; index++)
+            for (var index = -1; index <= expected.Count; index++)
             {
                 // Act
                 var result = Array
@@ -146,7 +146,7 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAtOrDefault
 
                 // Assert
                 _ = result.Must()
-                    .BeEqualTo(expected[index]);
+                    .BeEqualTo(System.Linq.Enumerable.ElementAtOrDefault(expected, index));
             }
         }
     }

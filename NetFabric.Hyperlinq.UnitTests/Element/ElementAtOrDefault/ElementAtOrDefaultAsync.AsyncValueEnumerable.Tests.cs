@@ -14,7 +14,7 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAtOrDefaultAsync
         public async ValueTask ElementAtOrDefaultAsync_With_ValidData_Must_Succeed(int[] source)
         {
             var wrapped = Wrap.AsAsyncValueEnumerable(source);
-            for (var index = 0; index < source.Length; index++)
+            for (var index = -1; index <= source.Length; index++)
             {
                 // Arrange
                 var expected = 
@@ -42,7 +42,7 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAtOrDefaultAsync
                 System.Linq.Enumerable.ToList(
                     System.Linq.Enumerable.Where(source, predicate.AsFunc()));
 
-            for (var index = 0; index < expected.Count; index++)
+            for (var index = -1; index <= expected.Count; index++)
             {
                 // Act
                 var result = await AsyncValueEnumerable
@@ -51,7 +51,7 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAtOrDefaultAsync
 
                 // Assert
                 _ = result.Must()
-                    .BeEqualTo(expected[index]);
+                    .BeEqualTo(System.Linq.Enumerable.ElementAtOrDefault(expected, index));
             }
         }
 
@@ -67,7 +67,7 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAtOrDefaultAsync
                 System.Linq.Enumerable.ToList(
                     System.Linq.Enumerable.Where(source, predicate.AsFunc()));
 
-            for (var index = 0; index < expected.Count; index++)
+            for (var index = -1; index <= expected.Count; index++)
             {
                 // Act
                 var result = await AsyncValueEnumerable
@@ -76,7 +76,7 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAtOrDefaultAsync
 
                 // Assert
                 _ = result.Must()
-                    .BeEqualTo(expected[index]);
+                    .BeEqualTo(System.Linq.Enumerable.ElementAtOrDefault(expected, index));
             }
         }
 
@@ -86,7 +86,7 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAtOrDefaultAsync
         [MemberData(nameof(TestData.SelectorMultiple), MemberType = typeof(TestData))]
         public async ValueTask ElementAtOrDefaultAsync_Selector_With_ValidData_Must_Succeed(int[] source, Selector<int, string> selector)
         {
-            for (var index = 0; index < source.Length; index++)
+            for (var index = -1; index <= source.Length; index++)
             {
                 // Arrange
                 var wrapped = Wrap.AsAsyncValueEnumerable(source);
@@ -111,7 +111,7 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAtOrDefaultAsync
         [MemberData(nameof(TestData.SelectorAtMultiple), MemberType = typeof(TestData))]
         public async ValueTask ElementAtOrDefaultAsync_SelectorAt_With_ValidData_Must_Succeed(int[] source, SelectorAt<int, string> selector)
         {
-            for (var index = 0; index < source.Length; index++)
+            for (var index = -1; index <= source.Length; index++)
             {
                 // Arrange
                 var wrapped = Wrap.AsAsyncValueEnumerable(source);
@@ -143,7 +143,7 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAtOrDefaultAsync
                     System.Linq.Enumerable.Select(
                         System.Linq.Enumerable.Where(source, predicate.AsFunc()), selector.AsFunc()));
 
-            for (var index = 0; index < expected.Count; index++)
+            for (var index = -1; index <= expected.Count; index++)
             {
                 // Act
                 var result = await AsyncValueEnumerable
@@ -153,7 +153,7 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAtOrDefaultAsync
 
                 // Assert
                 _ = result.Must()
-                    .BeEqualTo(expected[index]);
+                    .BeEqualTo(System.Linq.Enumerable.ElementAtOrDefault(expected, index));
             }
         }
     }

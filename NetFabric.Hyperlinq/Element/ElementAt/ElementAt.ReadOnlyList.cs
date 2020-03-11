@@ -20,9 +20,9 @@ namespace NetFabric.Hyperlinq
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         static TSource ElementAt<TList, TSource>(this TList source, int index, int skipCount, int takeCount) 
             where TList : notnull, IReadOnlyList<TSource>
-            => index < 0 || index >= takeCount ? 
-                Throw.ArgumentOutOfRangeException<TSource>(nameof(index)) : 
-                source[index + skipCount];
+            => index < 0 || index >= takeCount 
+                ? Throw.ArgumentOutOfRangeException<TSource>(nameof(index)) 
+                : source[index + skipCount];
 
         [Pure]
         static TSource ElementAt<TList, TSource>(this TList source, int index, Predicate<TSource> predicate, int skipCount, int takeCount) 
@@ -73,17 +73,17 @@ namespace NetFabric.Hyperlinq
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         static TResult ElementAt<TList, TSource, TResult>(this TList source, int index, Selector<TSource, TResult> selector, int skipCount, int takeCount) 
             where TList : notnull, IReadOnlyList<TSource>
-            => index < 0 || index >= takeCount ? 
-                Throw.ArgumentOutOfRangeException<TResult>(nameof(index)) : 
-                selector(source[index + skipCount]);
+            => index < 0 || index >= takeCount 
+                ? Throw.ArgumentOutOfRangeException<TResult>(nameof(index)) 
+                : selector(source[index + skipCount]);
 
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TResult ElementAt<TList, TSource, TResult>(this TList source, int index, SelectorAt<TSource, TResult> selector, int skipCount, int takeCount) 
             where TList : notnull, IReadOnlyList<TSource>
-            => index < 0 || index >= takeCount ? 
-                Throw.ArgumentOutOfRangeException<TResult>(nameof(index)) : 
-                selector(source[index + skipCount], index);
+            => index < 0 || index >= takeCount 
+                ? Throw.ArgumentOutOfRangeException<TResult>(nameof(index)) 
+                : selector(source[index + skipCount], index);
 
         [Pure]
         static TResult ElementAt<TList, TSource, TResult>(this TList source, int index, Predicate<TSource> predicate, Selector<TSource, TResult> selector, int skipCount, int takeCount) 
@@ -115,9 +115,9 @@ namespace NetFabric.Hyperlinq
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TSource ElementAtOrDefault<TList, TSource>(this TList source, int index, int skipCount, int takeCount) 
             where TList : notnull, IReadOnlyList<TSource>
-            => index < 0 || index >= takeCount ? 
-                default : 
-                source[index + skipCount];
+            => index < 0 || index >= takeCount 
+                ? default 
+                : source[index + skipCount];
 
         [Pure]
         static TSource ElementAtOrDefault<TList, TSource>(this TList source, int index, Predicate<TSource> predicate, int skipCount, int takeCount) 
@@ -168,17 +168,17 @@ namespace NetFabric.Hyperlinq
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         static TResult ElementAtOrDefault<TList, TSource, TResult>(this TList source, int index, Selector<TSource, TResult> selector, int skipCount, int takeCount) 
             where TList : notnull, IReadOnlyList<TSource>
-            => index < 0 || index >= takeCount ? 
-                default : 
-                selector(source[index + skipCount]);
+            => index < 0 || index >= takeCount 
+                ? default 
+                : selector(source[index + skipCount]);
 
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TResult ElementAtOrDefault<TList, TSource, TResult>(this TList source, int index, SelectorAt<TSource, TResult> selector, int skipCount, int takeCount) 
             where TList : notnull, IReadOnlyList<TSource>
-            => index < 0 || index >= takeCount ? 
-                default : 
-                selector(source[index + skipCount], index);
+            => index < 0 || index >= takeCount 
+                ? default 
+                : selector(source[index + skipCount], index);
 
         [Pure]
         static TResult ElementAtOrDefault<TList, TSource, TResult>(this TList source, int index, Predicate<TSource> predicate, Selector<TSource, TResult> selector, int skipCount, int takeCount) 

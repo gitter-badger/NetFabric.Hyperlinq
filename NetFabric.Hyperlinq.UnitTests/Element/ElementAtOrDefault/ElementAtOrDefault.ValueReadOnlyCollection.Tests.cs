@@ -12,7 +12,7 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAtOrDefault
         [MemberData(nameof(TestData.Multiple), MemberType = typeof(TestData))]
         public void ElementAtOrDefault_With_ValidData_Must_Succeed(int[] source)
         {
-            for (var index = 0; index < source.Length; index++)
+            for (var index = -1; index <= source.Length; index++)
             {
                 // Arrange
                 var wrapped = Wrap.AsValueReadOnlyCollection(source);
@@ -35,7 +35,7 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAtOrDefault
         [MemberData(nameof(TestData.SelectorMultiple), MemberType = typeof(TestData))]
         public void ElementAtOrDefault_Selector_With_ValidData_Must_Succeed(int[] source, Selector<int, string> selector)
         {
-            for (var index = 0; index < source.Length; index++)
+            for (var index = -1; index <= source.Length; index++)
             {
                 // Arrange
                 var wrapped = Wrap.AsValueReadOnlyCollection(source);
@@ -60,7 +60,7 @@ namespace NetFabric.Hyperlinq.UnitTests.Element.ElementAtOrDefault
         [MemberData(nameof(TestData.SelectorAtMultiple), MemberType = typeof(TestData))]
         public void ElementAtOrDefault_SelectorAt_With_ValidData_Must_Succeed(int[] source, SelectorAt<int, string> selector)
         {
-            for (var index = 0; index < source.Length; index++)
+            for (var index = -1; index <= source.Length; index++)
             {
                 // Arrange
                 var wrapped = Wrap.AsValueReadOnlyCollection(source);
