@@ -167,15 +167,11 @@ namespace NetFabric.Hyperlinq
 
         [Pure]
         [return: MaybeNull]
-        public static ValueTask<TSource> ElementAtOrDefaultAsync<TEnumerable, TEnumerator, TSource>(this TEnumerable source, int index, CancellationToken cancellationToken = default) 
+        public static async ValueTask<TSource> ElementAtOrDefaultAsync<TEnumerable, TEnumerator, TSource>(this TEnumerable source, int index, CancellationToken cancellationToken = default) 
             where TEnumerable : notnull, IAsyncValueEnumerable<TSource, TEnumerator>
             where TEnumerator : struct, IAsyncEnumerator<TSource>
         {
-            if (index < 0) Throw.ArgumentOutOfRangeException(nameof(index));
-
-            return ExecuteAsync(source, index, cancellationToken);
-
-            static async ValueTask<TSource> ExecuteAsync(TEnumerable source, int index, CancellationToken cancellationToken)
+            if (index >= 0) 
             {
                 var enumerator = source.GetAsyncEnumerator(cancellationToken);
                 await using (enumerator.ConfigureAwait(false))
@@ -186,21 +182,17 @@ namespace NetFabric.Hyperlinq
                             return enumerator.Current;
                     }
                 }
-                return default!;
             }
+            return default!;
         }
 
         [Pure]
         [return: MaybeNull]
-        static ValueTask<TSource> ElementAtOrDefaultAsync<TEnumerable, TEnumerator, TSource>(this TEnumerable source, int index, AsyncPredicate<TSource> predicate, CancellationToken cancellationToken) 
+        static async ValueTask<TSource> ElementAtOrDefaultAsync<TEnumerable, TEnumerator, TSource>(this TEnumerable source, int index, AsyncPredicate<TSource> predicate, CancellationToken cancellationToken) 
             where TEnumerable : notnull, IAsyncValueEnumerable<TSource, TEnumerator>
             where TEnumerator : struct, IAsyncEnumerator<TSource>
         {
-            if (index < 0) Throw.ArgumentOutOfRangeException(nameof(index));
-
-            return ExecuteAsync(source, index, predicate, cancellationToken);
-
-            static async ValueTask<TSource> ExecuteAsync(TEnumerable source, int index, AsyncPredicate<TSource> predicate, CancellationToken cancellationToken)
+            if (index >= 0) 
             {
                 var enumerator = source.GetAsyncEnumerator(cancellationToken);
                 await using (enumerator.ConfigureAwait(false))
@@ -211,21 +203,17 @@ namespace NetFabric.Hyperlinq
                             return enumerator.Current;
                     }
                 }
-                return default!;
             }
+            return default!;
         }
 
         [Pure]
         [return: MaybeNull]
-        static ValueTask<TSource> ElementAtOrDefaultAsync<TEnumerable, TEnumerator, TSource>(this TEnumerable source, int index, AsyncPredicateAt<TSource> predicate, CancellationToken cancellationToken) 
+        static async ValueTask<TSource> ElementAtOrDefaultAsync<TEnumerable, TEnumerator, TSource>(this TEnumerable source, int index, AsyncPredicateAt<TSource> predicate, CancellationToken cancellationToken) 
             where TEnumerable : notnull, IAsyncValueEnumerable<TSource, TEnumerator>
             where TEnumerator : struct, IAsyncEnumerator<TSource>
         {
-            if (index < 0) Throw.ArgumentOutOfRangeException(nameof(index));
-
-            return ExecuteAsync(source, index, predicate, cancellationToken);
-
-            static async ValueTask<TSource> ExecuteAsync(TEnumerable source, int index, AsyncPredicateAt<TSource> predicate, CancellationToken cancellationToken)
+            if (index >= 0) 
             {
                 var enumerator = source.GetAsyncEnumerator(cancellationToken);
                 await using (enumerator.ConfigureAwait(false))
@@ -239,21 +227,17 @@ namespace NetFabric.Hyperlinq
                         }
                     }
                 }
-                return default!;
             }
+            return default!;
         }
 
         [Pure]
         [return: MaybeNull]
-        static ValueTask<TResult> ElementAtOrDefaultAsync<TEnumerable, TEnumerator, TSource, TResult>(this TEnumerable source, int index, AsyncSelector<TSource, TResult> selector, CancellationToken cancellationToken) 
+        static async ValueTask<TResult> ElementAtOrDefaultAsync<TEnumerable, TEnumerator, TSource, TResult>(this TEnumerable source, int index, AsyncSelector<TSource, TResult> selector, CancellationToken cancellationToken) 
             where TEnumerable : notnull, IAsyncValueEnumerable<TSource, TEnumerator>
             where TEnumerator : struct, IAsyncEnumerator<TSource>
         {
-            if (index < 0) Throw.ArgumentOutOfRangeException(nameof(index));
-
-            return ExecuteAsync(source, index, selector, cancellationToken);
-
-            static async ValueTask<TResult> ExecuteAsync(TEnumerable source, int index, AsyncSelector<TSource, TResult> selector, CancellationToken cancellationToken)
+            if (index >= 0) 
             {
                 var enumerator = source.GetAsyncEnumerator(cancellationToken);
                 await using (enumerator.ConfigureAwait(false))
@@ -264,21 +248,17 @@ namespace NetFabric.Hyperlinq
                             return await selector(enumerator.Current, cancellationToken).ConfigureAwait(false);
                     }
                 }
-                return default!;
             }
+            return default!;
         }
 
         [Pure]
         [return: MaybeNull]
-        static ValueTask<TResult> ElementAtOrDefaultAsync<TEnumerable, TEnumerator, TSource, TResult>(this TEnumerable source, int index, AsyncSelectorAt<TSource, TResult> selector, CancellationToken cancellationToken) 
+        static async ValueTask<TResult> ElementAtOrDefaultAsync<TEnumerable, TEnumerator, TSource, TResult>(this TEnumerable source, int index, AsyncSelectorAt<TSource, TResult> selector, CancellationToken cancellationToken) 
             where TEnumerable : notnull, IAsyncValueEnumerable<TSource, TEnumerator>
             where TEnumerator : struct, IAsyncEnumerator<TSource>
         {
-            if (index < 0) Throw.ArgumentOutOfRangeException(nameof(index));
-
-            return ExecuteAsync(source, index, selector, cancellationToken);
-
-            static async ValueTask<TResult> ExecuteAsync(TEnumerable source, int index, AsyncSelectorAt<TSource, TResult> selector, CancellationToken cancellationToken)
+            if (index >= 0) 
             {
                 var enumerator = source.GetAsyncEnumerator(cancellationToken);
                 await using (enumerator.ConfigureAwait(false))
@@ -292,21 +272,17 @@ namespace NetFabric.Hyperlinq
                         }
                     }
                 }
-                return default;
             }
+            return default!;
         }
 
         [Pure]
         [return: MaybeNull]
-        static ValueTask<TResult> ElementAtOrDefaultAsync<TEnumerable, TEnumerator, TSource, TResult>(this TEnumerable source, int index, AsyncPredicate<TSource> predicate, AsyncSelector<TSource, TResult> selector, CancellationToken cancellationToken) 
+        static async ValueTask<TResult> ElementAtOrDefaultAsync<TEnumerable, TEnumerator, TSource, TResult>(this TEnumerable source, int index, AsyncPredicate<TSource> predicate, AsyncSelector<TSource, TResult> selector, CancellationToken cancellationToken) 
             where TEnumerable : notnull, IAsyncValueEnumerable<TSource, TEnumerator>
             where TEnumerator : struct, IAsyncEnumerator<TSource>
         {
-            if (index < 0) Throw.ArgumentOutOfRangeException(nameof(index));
-
-            return ExecuteAsync(source, index, predicate, selector, cancellationToken);
-
-            static async ValueTask<TResult> ExecuteAsync(TEnumerable source, int index, AsyncPredicate<TSource> predicate, AsyncSelector<TSource, TResult> selector, CancellationToken cancellationToken)
+            if (index >= 0) 
             {
                 var enumerator = source.GetAsyncEnumerator(cancellationToken);
                 await using (enumerator.ConfigureAwait(false))
@@ -317,8 +293,8 @@ namespace NetFabric.Hyperlinq
                             return await selector(enumerator.Current, cancellationToken).ConfigureAwait(false);
                     }
                 }
-                return default!;
             }
+            return default!;
         }
     }
 }
